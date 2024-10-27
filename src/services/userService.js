@@ -1,4 +1,5 @@
 import db from '../models/index';
+import user from '../models/user';
 
 var bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
@@ -9,7 +10,7 @@ let handleUserLogin = (email, password) => {
             let isExist = await checkUserEmail(email)
             if (isExist) {
                 let user = await db.User.findOne({
-                    attributes: ['email', 'password', 'roleId'],
+                    attributes: ['email', 'password', 'roleId', 'firstName', 'lastName'],
                     raw: true,
                     where: { email: email }
                 })
@@ -68,8 +69,7 @@ let checkUserEmail = (userEmail) => {
 let getAllUsers = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let users = ''
-            console.log('====', userId)
+            let users = []
             if (userId === 'ALL') {
                 users = await db.User.findAll({
                     attributes: { exclude: ['password'] }
@@ -82,7 +82,6 @@ let getAllUsers = (userId) => {
                     attributes: { exclude: ['password'] }
                 })
             }
-            console.log('.....', users)
             resolve(users)
         }
         catch (e) {
@@ -118,13 +117,14 @@ let createNewUser = (data) => {
                 db.User.create({
                     email: data.email,
                     password: hashPasswordByBcrypt,
-                    firstName: data.FirstName,
-                    lastName: data.LastName,
-                    address: data.Address,
-                    phonenumber: data.PhoneNumber,
-                    gender: data.gender === '1' ? true : false,
-                    roleId: data.Role,
-
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    address: data.address,
+                    phonenumber: data.phonenumber,
+                    gender: data.gender,
+                    roleId: data.roleId,
+                    positionId: data.positionId,
+                    image: data.avatar
                 })
                 resolve({
                     errCode: 0,
@@ -145,7 +145,6 @@ let deleteUser = (userId) => {
             where: { id: userId }
         })
         if (!user) {
-            console.log('12345')
             resolve({
                 errCode: 2,
                 errMessage: `The user isn't exist`
@@ -164,7 +163,7 @@ let updateuserDAta = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            if (!data.id) {
+            if (!data.id || !data.roleId || !data.positionId || !data.gender) {
                 resolve({
                     errCode: 2,
                     errMessage: 'Missing required parameter'
@@ -174,13 +173,16 @@ let updateuserDAta = (data) => {
                 where: { id: data.id },
                 raw: false
             })
-            console.log(user)
             if (user) {
                 user.firstName = data.firstName
                 user.lastName = data.lastName
                 user.address = data.address
-
-
+                user.roleId = data.roleId
+                user.positionId = data.positionId
+                user.gender = data.gender
+                user.phonenumber = data.phonenumber
+                if (data.avatar)
+                    user.image = data.avatar
                 await user.save()
 
                 resolve({
@@ -200,4 +202,22 @@ let updateuserDAta = (data) => {
         }
     })
 }
-module.exports = { handleUserLogin, getAllUsers, createNewUser, deleteUser, updateuserDAta }
+let getAllCodeService = async (typeInput) => {
+    try {
+        if (typeInput) {
+            let allCode = await db.allcodes.findAll({
+                where: { type: typeInput }
+            })
+            return { errCode: 0, data: allCode };
+        }
+        return {
+            errCode: 1,
+            errMessage: "Missing required parameter"
+        }
+    }
+    catch (e) {
+        return;
+    }
+}
+
+module.exports = { handleUserLogin, getAllUsers, createNewUser, deleteUser, updateuserDAta, getAllCodeService }
