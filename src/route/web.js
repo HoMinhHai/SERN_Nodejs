@@ -2,6 +2,9 @@ import express from 'express'
 import homeController from '../controllers/homeController'
 import userController from '../controllers/userController'
 import doctorController from '../controllers/doctorController'
+import patientController from '../controllers/patientController'
+import specialtyController from '../controllers/specialtyController'
+import clinicController from '../controllers/clinicController'
 let route = express.Router()
 let initWebRoutes = (app) => {
     route.get('/', homeController.getHomePage)
@@ -28,7 +31,30 @@ let initWebRoutes = (app) => {
 
     route.post('/api/bulk-create-schedule', doctorController.bulkCreateSchedule)
     route.get('/api/get-schedule-doctor-by-date', doctorController.getScheduleByDate)
+    route.get('/api/get-extra-infor-doctor-by-id', doctorController.getExtraInforDoctorById)
+    route.get('/api/get-profile-doctor-by-id', doctorController.getProfileDoctorById)
+    route.post('/api/patient-book-appointment', patientController.postBookAppoinment)
 
+    route.post('/api/verify-book-appointment', patientController.postVerifyBookAppoinment)
+
+
+    route.post('/api/create-new-specialty', specialtyController.createSpecialty)
+
+    route.get('/api/get-specialty', specialtyController.getAllSpecialty)
+    route.get('/api/get-detail-specialty-by-id', specialtyController.getDetailSpecialtyById)
+
+    // route.get('/api/get-detail-specialty-by-id', specialtyController.getDetailSpecialtyById)
+
+
+
+    route.post('/api/create-new-clinic', clinicController.createClinic)
+
+    route.get('/api/get-clinic', clinicController.getAllClinic)
+    route.get('/api/get-detail-clinic-by-id', clinicController.getDetailClinicById)
+    route.get('/api/get-list-patient-for-doctor', doctorController.getListPatientForDoctor)
+
+
+    route.post('/api/send-remedy', doctorController.sendRemedy)
 
     return app.use("/", route)
 }

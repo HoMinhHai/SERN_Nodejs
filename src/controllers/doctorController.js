@@ -75,4 +75,56 @@ let getScheduleByDate = async (req, res) => {
         })
     }
 }
-module.exports = { getTopDoctorHome, getAllDoctors, postInforDoctor, getDetailDoctorById, bulkCreateSchedule, getScheduleByDate }
+let getExtraInforDoctorById = async (req, res) => {
+    try {
+        let infor = await doctorService.getExtraInforDoctorById(req.query.doctorId)
+        return res.status(200).json(infor)
+    }
+    catch {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "An error has occured"
+        })
+    }
+}
+let getProfileDoctorById = async (req, res) => {
+    try {
+        let infor = await doctorService.getProfileDoctorById(req.query.doctorId)
+        return res.status(200).json(infor)
+    }
+    catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "An error has occured"
+        })
+    }
+}
+let getListPatientForDoctor = async (req, res) => {
+    try {
+        let infor = await doctorService.getListPatientForDoctor(req.query.doctorId, req.query.date)
+        return res.status(200).json(infor)
+    }
+    catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "An error has occured"
+        })
+    }
+}
+let sendRemedy = async (req, res) => {
+    try {
+        let infor = await doctorService.sendRemedy(req.body)
+        return res.status(200).json(infor)
+    }
+    catch (e) {
+        console.log(e)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "An error has occured"
+        })
+    }
+}
+module.exports = { sendRemedy, getListPatientForDoctor, getProfileDoctorById, getTopDoctorHome, getAllDoctors, postInforDoctor, getDetailDoctorById, bulkCreateSchedule, getScheduleByDate, getExtraInforDoctorById }

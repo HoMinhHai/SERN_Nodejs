@@ -31,7 +31,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       image: {
-        type: Sequelize.STRING
+        type: Sequelize.BLOB('long')
       },
       lastName: {
         type: Sequelize.STRING

@@ -10,7 +10,7 @@ let handleUserLogin = (email, password) => {
             let isExist = await checkUserEmail(email)
             if (isExist) {
                 let user = await db.User.findOne({
-                    attributes: ['email', 'password', 'roleId', 'firstName', 'lastName'],
+                    attributes: ['id', 'email', 'password', 'roleId', 'firstName', 'lastName'],
                     raw: true,
                     where: { email: email }
                 })
@@ -202,10 +202,10 @@ let updateuserDAta = (data) => {
         }
     })
 }
-let getAllCodeService = async (typeInput) => {
+let getAllCodeservice = async (typeInput) => {
     try {
         if (typeInput) {
-            let allCode = await db.allcodes.findAll({
+            let allCode = await db.AllCodes.findAll({
                 where: { type: typeInput }
             })
             return { errCode: 0, data: allCode };
@@ -220,4 +220,4 @@ let getAllCodeService = async (typeInput) => {
     }
 }
 
-module.exports = { handleUserLogin, getAllUsers, createNewUser, deleteUser, updateuserDAta, getAllCodeService }
+module.exports = { handleUserLogin, getAllUsers, createNewUser, deleteUser, updateuserDAta, getAllCodeservice }
